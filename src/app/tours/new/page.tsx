@@ -12,18 +12,14 @@ const NewTourPage: React.FC = () => {
   const router = useRouter();
 
   const handleCreate = async (tourData: Tour) => {
-    console.log('Submitted Tour Data:', tourData); 
     try {
       const response = await createTour(tourData);
       console.log('Tour created successfully:', response);
       router.push('/');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating tour:', error);
-      if (error.response) {
-        console.error('Response error data:', error.response.data);
-        console.error('Response status:', error.response.status);
-      } else {
-        console.error('An unknown error occurred:', error.message || error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
       }
     }
   };

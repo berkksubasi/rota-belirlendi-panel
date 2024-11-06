@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import { Tour } from '../types/Tour';
-import router from 'next/router';
 
 interface TourFormProps {
   onSubmit: (tourData: Tour) => void;

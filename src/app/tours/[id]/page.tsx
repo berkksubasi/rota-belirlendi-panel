@@ -52,11 +52,11 @@ const TourDetailPage: React.FC = () => {
           excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
         });
         setError(null);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Fetch error:', error);
-        const errorMessage = error.response?.status === 404
-          ? "Bu ID ile ilgili bir tur bulunamadı."
-          : `ID ${id} ile tur yüklenemedi. Detaylar: ${error.message || 'Bilinmeyen hata'}`;
+        const errorMessage = error instanceof Error && error.message
+          ? `ID ${id} ile tur yüklenemedi. Detaylar: ${error.message}`
+          : `ID ${id} ile tur yüklenemedi. Bilinmeyen hata.`;
         setError(errorMessage);
       }
     };
