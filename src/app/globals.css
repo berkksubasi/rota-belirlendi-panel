@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #ffd400;
+  --secondary-color: #1a1a1a;
+  --background-color: #f5f5f5;
+  --foreground-color: #ffffff;
+  --accent-color: #ff4081;
+  --font-family: 'Roboto', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #ffd400; /* Aynı primary renk, zengin bir sarı */
+    --secondary-color: #e5e5e5; /* Açık gri tonu */
+    --background-color: #121212; /* Koyu gri arka plan */
+    --foreground-color: #ffffff; /* Beyaz ön plan */
+    --accent-color: #ff5c8d; /* Daha yumuşak bir pembe */
+  }
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--secondary-color);
+}
+
+a {
+  color: var(--primary-color);
+}
