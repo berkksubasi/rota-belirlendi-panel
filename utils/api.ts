@@ -6,6 +6,7 @@ if (!API_URL) {
   throw new Error('API_URL is not defined. Please check your environment variables.');
 }
 
+
 export const fetchTours = async () => {
   try {
     const response = await axios.get(`${API_URL}/tours`);

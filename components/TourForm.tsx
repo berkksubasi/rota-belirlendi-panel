@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Tour } from '../types/Tour';
 
 interface TourFormProps {
-  onSubmit: (tourData: Tour) => void;
+  onSubmit: (tourData: Tour) => Promise<void>; 
   initialData?: Tour;
 }
 
@@ -18,6 +18,9 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
     includes: initialData?.includes || [],
     excludes: initialData?.excludes || [],
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,13 +38,26 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(tourData);
+    setLoading(true);
+    setError(null);
+    try {
+      await onSubmit(tourData);
+    } catch (err) {
+      console.error('Error submitting tour data:', err);
+      setError('Tur verileri kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-lg space-y-6 text-gray-800 dark:text-gray-100 transition-all duration-300">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg space-y-6 text-gray-800 dark:text-gray-100 transition-all duration-300"
+    >
+      {error && <div className="text-red-500 mb-4">{error}</div>}
       <input
         name="name"
         value={tourData.name}
@@ -105,9 +121,14 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
 
       <button
         type="submit"
-        className="w-full mb-4 bg-blue-500 dark:bg-blue-400 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 dark:hover:bg-blue-500 transition-all duration-300 transform hover:scale-105"
+        disabled={loading}
+        className={`w-full mb-4 ${
+          loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
+        } dark:bg-blue-400 dark:hover:bg-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 transform ${
+          loading ? '' : 'hover:scale-105'
+        }`}
       >
-        Kaydet
+        {loading ? 'Kaydediliyor...' : 'Kaydet'}
       </button>
     </form>
   );
