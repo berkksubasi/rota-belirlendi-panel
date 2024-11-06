@@ -4,6 +4,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { Tour } from '../../../../types/Tour';
 import { fetchTour, updateTour, deleteTour } from '../../../../utils/api';
 import TourForm from '../../../../components/TourForm';
+import Image from 'next/image';
 
 const TourDetailPage: React.FC = () => {
   const [tour, setTour] = useState<Tour | null>(null);
@@ -142,7 +143,7 @@ const TourDetailPage: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold mb-4">{tour.name}</h1>
             {tour.img ? (
-              <img src={tour.img} alt={tour.name} className="w-full h-auto mb-4 rounded" />
+              <Image src={tour.img} alt={tour.name} className="w-full h-auto mb-4 rounded" />
             ) : (
               <p className="mb-4 text-gray-500">Görsel mevcut değil.</p>
             )}
