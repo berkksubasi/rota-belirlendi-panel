@@ -28,7 +28,6 @@ const TourDetailPage: React.FC = () => {
           throw new Error('Geçersiz yanıt formatı');
         }
 
-        // Veriyi güvenli bir şekilde işleyin, örneğin null/undefined kontrolleriyle
         const tourData = Array.isArray(response.data) ? response.data[0] : response.data;
         setTour({
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',

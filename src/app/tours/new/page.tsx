@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +12,7 @@ const NewTourPage: React.FC = () => {
   const router = useRouter();
 
   const handleCreate = async (tourData: Tour) => {
-    console.log('Submitted Tour Data:', tourData); // Veriyi kontrol edin
+    console.log('Submitted Tour Data:', tourData); 
     try {
       const response = await createTour(tourData);
       console.log('Tour created successfully:', response);
@@ -20,7 +20,6 @@ const NewTourPage: React.FC = () => {
     } catch (error: any) {
       console.error('Error creating tour:', error);
       if (error.response) {
-        // Eğer backend'den dönen bir hata varsa daha ayrıntılı gösterim
         console.error('Response error data:', error.response.data);
         console.error('Response status:', error.response.status);
       } else {

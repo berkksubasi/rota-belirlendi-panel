@@ -14,43 +14,17 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
     name: initialData?.name || '',
     details: initialData?.details || '',
     date: initialData?.date || '',
-    price: initialData?.price,
+    price: initialData?.price || 0,
     img: initialData?.img || '',
     includes: initialData?.includes || [],
     excludes: initialData?.excludes || [],
   });
 
-  const handleCreate = async (tourData: any) => {
-    console.log('Gönderilen Tour Verisi:', tourData); // Kontrol için
-
-    try {
-      const response = await fetch('http://localhost:5001/api/tours', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(tourData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Hata:', errorData);
-        throw new Error(`Sunucu hatası: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      console.log('Başarıyla Tur Oluşturuldu:', responseData);
-      router.push('/'); // Başarılı işlem sonrası ana sayfaya yönlendirme
-    } catch (error: any) {
-      console.error('Tur oluşturulurken hata:', error.message);
-    }
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setTourData((prevData) => ({
       ...prevData,
-      [name]: name === 'price' ? (value ? parseFloat(value) : undefined) : value,
+      [name]: name === 'price' ? (value ? parseFloat(value) : 0) : value,
     }));
   };
 
@@ -99,7 +73,7 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
       <input
         name="price"
         type="number"
-        value={tourData.price !== undefined ? tourData.price : ''}
+        value={tourData.price}
         onChange={handleChange}
         placeholder="Fiyat"
         required
@@ -129,7 +103,6 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
         placeholder="Dahil Olmayanlar (Her bir öğeyi yeni satıra yazın)"
         className="w-full mb-4 p-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200 resize-none"
       />
-
 
       <button
         type="submit"
