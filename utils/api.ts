@@ -23,12 +23,21 @@ export const fetchTour = async (id: string) => {
   }
   try {
     const response = await axios.get(`${API_URL}/tours/${id}`);
+    if (
+      response.headers['content-type'] &&
+      !response.headers['content-type'].includes('application/json')
+    ) {
+      throw new Error('Unexpected response format. Expected JSON.');
+    }
+    
     return response.data;
   } catch (error) {
-    console.error(`Error fetching tour with id ${id}:`, error);
-    throw error;
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    console.error(`Error fetching tour with id ${id}: ${errorMessage}`);
+    throw new Error(`Failed to fetch tour: ${errorMessage}`);
   }
 };
+
 
 export const createTour = async (tourData: any) => {
   try {
