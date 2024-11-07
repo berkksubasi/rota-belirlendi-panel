@@ -10,17 +10,27 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchTours()
-      .then((response) => {
-        setTours(response.data || []);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null); // Hata durumunu sıfırla
+      try {
+        const response = await fetchTours();
+        if (response.data && Array.isArray(response.data)) {
+          setTours(response.data);
+        } else {
+          console.error('Beklenmeyen veri formatı:', response.data);
+          setError('Geçersiz veri formatı alındı.');
+          setTours([]);
+        }
+      } catch (error) {
         console.error('Error fetching tours:', error);
         setError('Turlar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (loading) {
@@ -31,7 +41,7 @@ const Home: React.FC = () => {
     return <p className="text-center text-red-500">{error}</p>;
   }
 
-  if (!tours.length) {
+  if (!tours || tours.length === 0) {
     return <p className="text-center text-gray-500">Gösterilecek tur bulunamadı.</p>;
   }
 
