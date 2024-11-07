@@ -12,11 +12,13 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
     _id: initialData?._id || '',
     name: initialData?.name || '',
     details: initialData?.details || '',
-    date: initialData?.date || '',
+    date: initialData?.date || { start: '', end: '' },
     price: initialData?.price || 0,
     img: initialData?.img || '',
     includes: initialData?.includes || [],
     excludes: initialData?.excludes || [],
+    itinerary: initialData?.itinerary || [],
+    status: initialData?.status || 'available',
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,6 +29,14 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
     setTourData((prevData) => ({
       ...prevData,
       [name]: name === 'price' ? (value ? parseFloat(value) : 0) : value,
+    }));
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'start' | 'end') => {
+    const { value } = e.target;
+    setTourData((prevData) => ({
+      ...prevData,
+      date: { ...prevData.date, [field]: value },
     }));
   };
 
@@ -76,14 +86,29 @@ const TourForm: React.FC<TourFormProps> = ({ onSubmit, initialData }) => {
         className="w-full mb-4 p-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200 resize-none"
       />
 
-      <input
-        name="date"
-        type="date"
-        value={tourData.date}
-        onChange={handleChange}
-        required
-        className="w-full mb-4 p-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200"
-      />
+      <div className="mb-4">
+        <label className="block mb-2">Başlangıç Tarihi</label>
+        <input
+          name="dateStart"
+          type="date"
+          value={tourData.date.start}
+          onChange={(e) => handleDateChange(e, 'start')}
+          required
+          className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block mb-2">Bitiş Tarihi</label>
+        <input
+          name="dateEnd"
+          type="date"
+          value={tourData.date.end}
+          onChange={(e) => handleDateChange(e, 'end')}
+          required
+          className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200"
+        />
+      </div>
 
       <input
         name="price"
