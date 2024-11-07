@@ -26,17 +26,8 @@ const TourDetailPage: React.FC = () => {
       try {
         const response = await fetchTour(id);
 
-        if (!response || typeof response !== 'object') {
-          throw new Error('Geçersiz yanıt formatı');
-        }
-
-        // Yanıtın JSON olup olmadığını kontrol et
-        if (
-          response.headers &&
-          response.headers.get('content-type') &&
-          !response.headers.get('content-type')?.includes('application/json')
-        ) {
-          throw new Error('Beklenen JSON formatında yanıt alınamadı.');
+        if (!response || typeof response !== 'object' || !response.data) {
+          throw new Error('Geçersiz yanıt formatı veya veri eksik.');
         }
 
         const tourData = Array.isArray(response.data) ? response.data[0] : response.data;
@@ -45,7 +36,6 @@ const TourDetailPage: React.FC = () => {
           throw new Error('Tur verisi alınamadı.');
         }
 
-        // Tur verisini set et
         setTour({
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
           name: tourData.name || 'Adı belirtilmemiş',
@@ -62,8 +52,8 @@ const TourDetailPage: React.FC = () => {
           status: tourData.status || 'available',
         });
         setError(null);
-      } catch (error: any) {
-        console.error('Fetch error:', error.message || error);
+      } catch (err) {
+        console.error('Fetch error:', err instanceof Error ? err.message : err);
         setError('Tur verileri yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
       }
     };
@@ -82,8 +72,8 @@ const TourDetailPage: React.FC = () => {
     try {
       await deleteTour(id);
       router.push('/');
-    } catch (error) {
-      console.error(`Hata: ID ${id} ile tur silinemedi. Detaylar:`, error);
+    } catch (err) {
+      console.error(`Hata: ID ${id} ile tur silinemedi. Detaylar:`, err instanceof Error ? err.message : err);
       setError('Tur silme işlemi başarısız oldu. Lütfen tekrar deneyin.');
     }
   };
@@ -99,7 +89,7 @@ const TourDetailPage: React.FC = () => {
       setEditMode(false);
       const updatedTourData = await fetchTour(id);
 
-      if (!updatedTourData || typeof updatedTourData !== 'object') {
+      if (!updatedTourData || typeof updatedTourData !== 'object' || !updatedTourData.data) {
         throw new Error('Güncellenmiş tur bilgisi alınamadı');
       }
 
@@ -120,8 +110,8 @@ const TourDetailPage: React.FC = () => {
         itinerary: tourData.itinerary || [],
         status: tourData.status || 'available',
       });
-    } catch (error: any) {
-      console.error(`Hata: ID ${id} ile tur güncellenemedi. Detaylar:`, error.message || error);
+    } catch (err) {
+      console.error(`Hata: ID ${id} ile tur güncellenemedi. Detaylar:`, err instanceof Error ? err.message : err);
       setError('Tur güncelleme işlemi başarısız oldu. Lütfen tekrar deneyin.');
     }
   };
