@@ -13,7 +13,7 @@ const TourDetailPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
 
-  // Type check for params.id
+  // ID parametresini kontrol et
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
   useEffect(() => {
@@ -26,16 +26,18 @@ const TourDetailPage: React.FC = () => {
       try {
         const response = await fetchTour(id);
 
+        // Yanıtın tipi ve verileri kontrol et
         if (!response || typeof response !== 'object' || !response.data) {
           throw new Error('Geçersiz yanıt formatı veya veri eksik.');
         }
 
         const tourData = Array.isArray(response.data) ? response.data[0] : response.data;
 
-        if (!tourData) {
+        if (!tourData || typeof tourData !== 'object') {
           throw new Error('Tur verisi alınamadı.');
         }
 
+        // Veriyi set et, eksik alanları kontrol et
         setTour({
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
           name: tourData.name || 'Adı belirtilmemiş',
@@ -44,11 +46,11 @@ const TourDetailPage: React.FC = () => {
             start: tourData.date?.start ? new Date(tourData.date.start).toISOString() : '',
             end: tourData.date?.end ? new Date(tourData.date.end).toISOString() : '',
           },
-          price: tourData.price || 0,
+          price: tourData.price ?? 0,
           img: tourData.img || '',
           includes: Array.isArray(tourData.includes) ? tourData.includes : [],
           excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
-          itinerary: tourData.itinerary || [],
+          itinerary: Array.isArray(tourData.itinerary) ? tourData.itinerary : [],
           status: tourData.status || 'available',
         });
         setError(null);
@@ -103,11 +105,11 @@ const TourDetailPage: React.FC = () => {
           start: tourData.date?.start ? new Date(tourData.date.start).toLocaleDateString() : '',
           end: tourData.date?.end ? new Date(tourData.date.end).toLocaleDateString() : '',
         },
-        price: tourData.price || 0,
+        price: tourData.price ?? 0,
         img: tourData.img || '',
         includes: Array.isArray(tourData.includes) ? tourData.includes : [],
         excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
-        itinerary: tourData.itinerary || [],
+        itinerary: Array.isArray(tourData.itinerary) ? tourData.itinerary : [],
         status: tourData.status || 'available',
       });
     } catch (err) {
