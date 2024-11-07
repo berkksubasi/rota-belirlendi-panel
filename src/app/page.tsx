@@ -15,15 +15,14 @@ const Home: React.FC = () => {
       setError(null); // Hata durumunu sıfırla
       try {
         const response = await fetchTours();
-        if (response.data && Array.isArray(response.data)) {
+        // Gelen veriyi kontrol et
+        if (response && response.data && Array.isArray(response.data)) {
           setTours(response.data);
         } else {
-          console.error('Beklenmeyen veri formatı:', response.data);
-          setError('Geçersiz veri formatı alındı.');
-          setTours([]);
+          throw new Error('Beklenmeyen veri formatı alındı');
         }
-      } catch (error) {
-        console.error('Error fetching tours:', error);
+      } catch (err) {
+        console.error('Error fetching tours:', err);
         setError('Turlar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
       } finally {
         setLoading(false);
