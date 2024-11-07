@@ -31,7 +31,7 @@ const TourDetailPage: React.FC = () => {
           throw new Error('Geçersiz yanıt formatı veya veri eksik.');
         }
     
-        const tourData = Array.isArray(response) ? response[0] : response; // response.data yerine direkt response kullanın
+        const tourData = Array.isArray(response) ? response[0] : response; 
     
         if (!tourData || typeof tourData !== 'object') {
           throw new Error('Tur verisi alınamadı.');
@@ -43,8 +43,8 @@ const TourDetailPage: React.FC = () => {
           name: tourData.name || 'Adı belirtilmemiş',
           details: tourData.details || 'Detaylar belirtilmemiş',
           date: {
-            start: tourData.date?.start ? new Date(tourData.date.start).toISOString() : '',
-            end: tourData.date?.end ? new Date(tourData.date.end).toISOString() : '',
+            start: tourData.date?.start ? new Date(tourData.date.start).toLocaleDateString('en-CA') : '',
+            end: tourData.date?.end ? new Date(tourData.date.end).toLocaleDateString('en-CA') : '',
           },
           price: tourData.price ?? 0,
           img: tourData.img || '',
@@ -97,19 +97,19 @@ const TourDetailPage: React.FC = () => {
       setEditMode(false);
       const updatedTourData = await fetchTour(id);
 
-      if (!updatedTourData || typeof updatedTourData !== 'object' || !updatedTourData.data) {
+      if (!updatedTourData || typeof updatedTourData !== 'object') {
         throw new Error('Güncellenmiş tur bilgisi alınamadı');
       }
 
-      const tourData = Array.isArray(updatedTourData.data) ? updatedTourData.data[0] : updatedTourData.data;
+      const tourData = Array.isArray(updatedTourData) ? updatedTourData[0] : updatedTourData;
 
       setTour({
         _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
         name: tourData.name || 'Adı belirtilmemiş',
         details: tourData.details || 'Detaylar belirtilmemiş',
         date: {
-          start: tourData.date?.start ? new Date(tourData.date.start).toLocaleDateString() : '',
-          end: tourData.date?.end ? new Date(tourData.date.end).toLocaleDateString() : '',
+          start: tourData.date?.start ? new Date(tourData.date.start).toLocaleDateString('en-CA') : '',
+          end: tourData.date?.end ? new Date(tourData.date.end).toLocaleDateString('en-CA') : '',
         },
         price: tourData.price ?? 0,
         img: tourData.img || '',
