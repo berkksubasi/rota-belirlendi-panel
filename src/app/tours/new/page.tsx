@@ -16,11 +16,8 @@ const NewTourPage: React.FC = () => {
       const response = await createTour(tourData);
       console.log('Tour created successfully:', response);
       router.push('/');
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error creating tour:', error);
-      if (error instanceof Error) {
-        console.error('Error message:', error.message);
-      }
     }
   };
 

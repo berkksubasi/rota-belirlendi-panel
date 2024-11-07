@@ -13,10 +13,11 @@ const TourDetailPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
 
-  const id = params.id && Array.isArray(params.id) ? params.id[0] : params.id;
+  // Type check for params.id
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
   useEffect(() => {
-    if (!id) {
+    if (!id || typeof id !== 'string') {
       setError("Hata: 'id' parametresi geçersiz veya bulunamadı.");
       return;
     }
@@ -33,23 +34,16 @@ const TourDetailPage: React.FC = () => {
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
           name: tourData.name || 'Adı belirtilmemiş',
           details: tourData.details || 'Detaylar belirtilmemiş',
-          date: tourData.date?.$date
-            ? new Date(tourData.date.$date).toLocaleDateString('tr-TR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            : tourData.date
-            ? new Date(tourData.date).toLocaleDateString('tr-TR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            : 'Tarih belirtilmemiş',
+          date: {
+            start: tourData.date?.start ? new Date(tourData.date.start).toISOString() : '',
+            end: tourData.date?.end ? new Date(tourData.date.end).toISOString() : '',
+          },
           price: tourData.price || 0,
           img: tourData.img || '',
           includes: Array.isArray(tourData.includes) ? tourData.includes : [],
           excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
+          itinerary: tourData.itinerary || [], // Eksik olan alan eklendi
+          status: tourData.status || 'available', // Eksik olan alan eklendi
         });
         setError(null);
       } catch (error: unknown) {
@@ -65,7 +59,7 @@ const TourDetailPage: React.FC = () => {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!id) {
+    if (!id || typeof id !== 'string') {
       setError("Hata: Silme için geçersiz 'id' parametresi!");
       return;
     }
@@ -83,7 +77,7 @@ const TourDetailPage: React.FC = () => {
   };
 
   const handleUpdate = async (updatedTour: Tour) => {
-    if (!id) {
+    if (!id || typeof id !== 'string') {
       setError("Hata: Güncelleme için geçersiz 'id' parametresi!");
       return;
     }
@@ -101,23 +95,16 @@ const TourDetailPage: React.FC = () => {
         _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
         name: tourData.name || 'Adı belirtilmemiş',
         details: tourData.details || 'Detaylar belirtilmemiş',
-        date: tourData.date?.$date
-          ? new Date(tourData.date.$date).toLocaleDateString('tr-TR', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })
-          : tourData.date
-          ? new Date(tourData.date).toLocaleDateString('tr-TR', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })
-          : 'Tarih belirtilmemiş',
+        date: {
+          start: tourData.date?.start ? new Date(tourData.date.start).toISOString() : '',
+          end: tourData.date?.end ? new Date(tourData.date.end).toISOString() : '',
+        },
         price: tourData.price || 0,
         img: tourData.img || '',
         includes: Array.isArray(tourData.includes) ? tourData.includes : [],
         excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
+        itinerary: tourData.itinerary || [],
+        status: tourData.status || 'available',
       });
     } catch (error) {
       console.error(`Hata: ID ${id} ile tur güncellenemedi. Detaylar:`, error);
@@ -147,7 +134,7 @@ const TourDetailPage: React.FC = () => {
               <p className="mb-4 text-gray-500">Görsel mevcut değil.</p>
             )}
             <p className="mb-4"><strong>Detaylar:</strong> {tour.details}</p>
-            <p className="mb-4"><strong>Çıkış Tarihi:</strong> {tour.date}</p>
+            <p className="mb-4"><strong>Çıkış Tarihi:</strong> {tour.date.start} - {tour.date.end}</p>
             <p className="mb-4"><strong>Fiyat:</strong> {tour.price ? `${tour.price}₺` : 'Fiyat belirtilmemiş'}</p>
             {tour.includes && tour.includes.length > 0 && (
               <div className="mb-4">
