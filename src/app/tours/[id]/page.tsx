@@ -52,11 +52,10 @@ const TourDetailPage: React.FC = () => {
           excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
           itinerary: Array.isArray(tourData.itinerary)
             ? tourData.itinerary.map((item: { day: number; activities: string[] }) => ({
-              day: item.day || 0,
-              activities: Array.isArray(item.activities) ? item.activities : [],
-            }))
+                day: item.day || 0,
+                activities: Array.isArray(item.activities) ? item.activities : [],
+              }))
             : [],
-
           status: tourData.status || 'available',
         });
         setError(null);
@@ -117,11 +116,10 @@ const TourDetailPage: React.FC = () => {
         excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
         itinerary: Array.isArray(tourData.itinerary)
           ? tourData.itinerary.map((item: { day: number; activities: string[] }) => ({
-            day: item.day || 0,
-            activities: Array.isArray(item.activities) ? item.activities : [],
-          }))
+              day: item.day || 0,
+              activities: Array.isArray(item.activities) ? item.activities : [],
+            }))
           : [],
-
         status: tourData.status || 'available',
       });
     } catch (err) {
@@ -147,18 +145,30 @@ const TourDetailPage: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold mb-4">{tour.name}</h1>
             {tour.img ? (
-              <Image src={tour.img} alt={tour.name} className="w-full h-auto mb-4 rounded" />
+              <Image
+                src={tour.img}
+                alt={tour.name}
+                width={600} 
+                height={400}
+                className="w-full h-auto mb-4 rounded"
+              />
             ) : (
               <p className="mb-4 text-gray-500">Görsel mevcut değil.</p>
             )}
-            <p className="mb-4"><strong>Detaylar:</strong> {tour.details}</p>
-            <p className="mb-4"><strong>Çıkış Tarihi:</strong> {tour.date.start} - {tour.date.end}</p>
-            <p className="mb-4"><strong>Fiyat:</strong> {tour.price ? `${tour.price}₺` : 'Fiyat belirtilmemiş'}</p>
+            <p className="mb-4">
+              <strong>Detaylar:</strong> {tour.details}
+            </p>
+            <p className="mb-4">
+              <strong>Çıkış Tarihi:</strong> {tour.date.start} - {tour.date.end}
+            </p>
+            <p className="mb-4">
+              <strong>Fiyat:</strong> {tour.price ? `${tour.price}₺` : 'Fiyat belirtilmemiş'}
+            </p>
             {tour.includes && tour.includes.length > 0 && (
               <div className="mb-4">
                 <strong>Dahil Olanlar:</strong>
                 <ul className="list-disc ml-6">
-                  {tour.includes.map((item, index) => (
+                  {tour.includes.map((item: string, index: number) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
@@ -168,8 +178,20 @@ const TourDetailPage: React.FC = () => {
               <div className="mb-4">
                 <strong>Dahil Olmayanlar:</strong>
                 <ul className="list-disc ml-6">
-                  {tour.excludes.map((item, index) => (
+                  {tour.excludes.map((item: string, index: number) => (
                     <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {tour.itinerary && tour.itinerary.length > 0 && (
+              <div className="mb-4">
+                <strong>Güzergah:</strong>
+                <ul className="list-disc ml-6">
+                  {tour.itinerary.map((item, index) => (
+                    <li key={index}>
+                      Gün {item.day}: {item.activities.join(', ')}
+                    </li>
                   ))}
                 </ul>
               </div>
