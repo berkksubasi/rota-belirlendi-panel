@@ -12,14 +12,21 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      setError(null); // Hata durumunu sıfırla
+      setError(null);
       try {
         const response = await fetchTours();
-        // Gelen veriyi kontrol et
-        if (response && response.data && Array.isArray(response.data)) {
-          setTours(response.data);
+
+        // API'den dönen yanıtı kontrol et
+        if (response && typeof response === 'object') {
+          if (Array.isArray(response)) {
+            setTours(response); // Eğer yanıt direkt bir dizi ise
+          } else if (response.data && Array.isArray(response.data)) {
+            setTours(response.data); // Eğer response.data diziyse
+          } else {
+            throw new Error('Beklenmeyen veri formatı alındı');
+          }
         } else {
-          throw new Error('Beklenmeyen veri formatı alındı');
+          throw new Error('Geçersiz API yanıtı');
         }
       } catch (err) {
         console.error('Error fetching tours:', err);
