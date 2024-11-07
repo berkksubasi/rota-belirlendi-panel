@@ -37,7 +37,7 @@ const TourDetailPage: React.FC = () => {
           throw new Error('Tur verisi alınamadı.');
         }
 
-        // Veriyi set et, eksik alanları kontrol et
+        // Eksik veya hatalı veri kontrolü yaparak tur verisini set et
         setTour({
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
           name: tourData.name || 'Adı belirtilmemiş',
@@ -50,7 +50,13 @@ const TourDetailPage: React.FC = () => {
           img: tourData.img || '',
           includes: Array.isArray(tourData.includes) ? tourData.includes : [],
           excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
-          itinerary: Array.isArray(tourData.itinerary) ? tourData.itinerary : [],
+          itinerary: Array.isArray(tourData.itinerary)
+            ? tourData.itinerary.map((item: { day: number; activities: string[] }) => ({
+              day: item.day || 0,
+              activities: Array.isArray(item.activities) ? item.activities : [],
+            }))
+            : [],
+
           status: tourData.status || 'available',
         });
         setError(null);
@@ -109,7 +115,13 @@ const TourDetailPage: React.FC = () => {
         img: tourData.img || '',
         includes: Array.isArray(tourData.includes) ? tourData.includes : [],
         excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
-        itinerary: Array.isArray(tourData.itinerary) ? tourData.itinerary : [],
+        itinerary: Array.isArray(tourData.itinerary)
+          ? tourData.itinerary.map((item: { day: number; activities: string[] }) => ({
+            day: item.day || 0,
+            activities: Array.isArray(item.activities) ? item.activities : [],
+          }))
+          : [],
+
         status: tourData.status || 'available',
       });
     } catch (err) {
