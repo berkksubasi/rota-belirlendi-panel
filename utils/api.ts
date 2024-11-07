@@ -9,8 +9,11 @@ if (!API_URL) {
 
 export const fetchTours = async () => {
   try {
-    const response = await axios.get(`${API_URL}/tours`);
-    return response.data;
+    const response = await fetch(`${API_URL}/tours`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
   } catch (error) {
     console.error('Error fetching tours:', error);
     throw error;
@@ -23,7 +26,7 @@ export const fetchTour = async (id: string) => {
   }
   try {
     const response = await axios.get(`${API_URL}/tours/${id}`);
-    
+
     if (
       response.headers &&
       response.headers['content-type'] &&
@@ -32,7 +35,7 @@ export const fetchTour = async (id: string) => {
       console.error('Unexpected response format:', response.data);
       throw new Error('Unexpected response format. Expected JSON.');
     }
-    
+
     if (!response.data || typeof response.data !== 'object') {
       throw new Error('Invalid data format. Expected a JSON object.');
     }
