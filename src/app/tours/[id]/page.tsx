@@ -51,12 +51,13 @@ const TourDetailPage: React.FC = () => {
           includes: Array.isArray(tourData.includes) ? tourData.includes : [],
           excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
           itinerary: Array.isArray(tourData.itinerary)
-            ? tourData.itinerary.map((item: { day: number; activities: string[] }) => ({
-                day: item.day || 0,
-                activities: Array.isArray(item.activities) ? item.activities : [],
-              }))
+            ? tourData.itinerary.map((item: { day: number; activities: string[]; }) => ({
+              day: item.day || 0,
+              activities: Array.isArray(item.activities) ? item.activities : [],
+            }))
             : [],
           status: tourData.status || 'available',
+          length: 0
         });
         setError(null);
       } catch (err) {
@@ -115,12 +116,13 @@ const TourDetailPage: React.FC = () => {
         includes: Array.isArray(tourData.includes) ? tourData.includes : [],
         excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
         itinerary: Array.isArray(tourData.itinerary)
-          ? tourData.itinerary.map((item: { day: number; activities: string[] }) => ({
-              day: item.day || 0,
-              activities: Array.isArray(item.activities) ? item.activities : [],
-            }))
+          ? tourData.itinerary.map((item: { day: number; activities: string[]; }) => ({
+            day: item.day || 0,
+            activities: Array.isArray(item.activities) ? item.activities : [],
+          }))
           : [],
         status: tourData.status || 'available',
+        length: 0
       });
     } catch (err) {
       console.error(`Hata: ID ${id} ile tur güncellenemedi. Detaylar:`, err instanceof Error ? err.message : err);

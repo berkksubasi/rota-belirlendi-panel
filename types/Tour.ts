@@ -1,4 +1,5 @@
 export type Tour = {
+  length: number;
   _id: string;
   img?: string;
   name: string;
