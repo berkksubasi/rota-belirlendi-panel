@@ -25,33 +25,36 @@ const TourDetailPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await fetchTour(id);
-        if (!response || !response.data) {
+
+        if (!response || typeof response !== 'object') {
           throw new Error('Geçersiz yanıt formatı');
         }
 
         const tourData = Array.isArray(response.data) ? response.data[0] : response.data;
+
+        if (!tourData) {
+          throw new Error('Tur verisi alınamadı.');
+        }
+
         setTour({
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
           name: tourData.name || 'Adı belirtilmemiş',
           details: tourData.details || 'Detaylar belirtilmemiş',
           date: {
-            start: tourData.date?.start ? new Date(tourData.date.start).toISOString() : '',
-            end: tourData.date?.end ? new Date(tourData.date.end).toISOString() : '',
+            start: tourData.date?.start ? new Date(tourData.date.start).toLocaleDateString() : '',
+            end: tourData.date?.end ? new Date(tourData.date.end).toLocaleDateString() : '',
           },
           price: tourData.price || 0,
           img: tourData.img || '',
           includes: Array.isArray(tourData.includes) ? tourData.includes : [],
           excludes: Array.isArray(tourData.excludes) ? tourData.excludes : [],
-          itinerary: tourData.itinerary || [], // Eksik olan alan eklendi
-          status: tourData.status || 'available', // Eksik olan alan eklendi
+          itinerary: tourData.itinerary || [],
+          status: tourData.status || 'available',
         });
         setError(null);
       } catch (error: unknown) {
         console.error('Fetch error:', error);
-        const errorMessage = error instanceof Error && error.message
-          ? `ID ${id} ile tur yüklenemedi. Detaylar: ${error.message}`
-          : `ID ${id} ile tur yüklenemedi. Bilinmeyen hata.`;
-        setError(errorMessage);
+        setError('Tur verileri yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
       }
     };
 
@@ -86,9 +89,11 @@ const TourDetailPage: React.FC = () => {
       await updateTour(id, updatedTour);
       setEditMode(false);
       const updatedTourData = await fetchTour(id);
-      if (!updatedTourData || !updatedTourData.data) {
+
+      if (!updatedTourData || typeof updatedTourData !== 'object') {
         throw new Error('Güncellenmiş tur bilgisi alınamadı');
       }
+
       const tourData = Array.isArray(updatedTourData.data) ? updatedTourData.data[0] : updatedTourData.data;
 
       setTour({
@@ -96,8 +101,8 @@ const TourDetailPage: React.FC = () => {
         name: tourData.name || 'Adı belirtilmemiş',
         details: tourData.details || 'Detaylar belirtilmemiş',
         date: {
-          start: tourData.date?.start ? new Date(tourData.date.start).toISOString() : '',
-          end: tourData.date?.end ? new Date(tourData.date.end).toISOString() : '',
+          start: tourData.date?.start ? new Date(tourData.date.start).toLocaleDateString() : '',
+          end: tourData.date?.end ? new Date(tourData.date.end).toLocaleDateString() : '',
         },
         price: tourData.price || 0,
         img: tourData.img || '',
