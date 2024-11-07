@@ -25,19 +25,19 @@ const TourDetailPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await fetchTour(id);
-
-        // Yanıtın tipi ve verileri kontrol et
-        if (!response || typeof response !== 'object' || !response.data) {
+    
+        // Yanıtın geçerli bir nesne olup olmadığını kontrol edin
+        if (!response || typeof response !== 'object') {
           throw new Error('Geçersiz yanıt formatı veya veri eksik.');
         }
-
-        const tourData = Array.isArray(response.data) ? response.data[0] : response.data;
-
+    
+        const tourData = Array.isArray(response) ? response[0] : response; // response.data yerine direkt response kullanın
+    
         if (!tourData || typeof tourData !== 'object') {
           throw new Error('Tur verisi alınamadı.');
         }
-
-        // Eksik veya hatalı veri kontrolü yaparak tur verisini set et
+    
+        // Tur verisini ayarlayın
         setTour({
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
           name: tourData.name || 'Adı belirtilmemiş',
@@ -63,7 +63,7 @@ const TourDetailPage: React.FC = () => {
         console.error('Fetch error:', err instanceof Error ? err.message : err);
         setError('Tur verileri yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
       }
-    };
+    };    
     fetchData();
   }, [id]);
 
