@@ -30,19 +30,29 @@ const TourDetailPage: React.FC = () => {
           throw new Error('Geçersiz yanıt formatı');
         }
 
+        // Yanıtın JSON olup olmadığını kontrol et
+        if (
+          response.headers &&
+          response.headers.get('content-type') &&
+          !response.headers.get('content-type')?.includes('application/json')
+        ) {
+          throw new Error('Beklenen JSON formatında yanıt alınamadı.');
+        }
+
         const tourData = Array.isArray(response.data) ? response.data[0] : response.data;
 
         if (!tourData) {
           throw new Error('Tur verisi alınamadı.');
         }
 
+        // Tur verisini set et
         setTour({
           _id: tourData._id?.$oid || tourData._id || 'Bilinmiyor',
           name: tourData.name || 'Adı belirtilmemiş',
           details: tourData.details || 'Detaylar belirtilmemiş',
           date: {
-            start: tourData.date?.start ? new Date(tourData.date.start).toLocaleDateString() : '',
-            end: tourData.date?.end ? new Date(tourData.date.end).toLocaleDateString() : '',
+            start: tourData.date?.start ? new Date(tourData.date.start).toISOString() : '',
+            end: tourData.date?.end ? new Date(tourData.date.end).toISOString() : '',
           },
           price: tourData.price || 0,
           img: tourData.img || '',
@@ -52,12 +62,11 @@ const TourDetailPage: React.FC = () => {
           status: tourData.status || 'available',
         });
         setError(null);
-      } catch (error: unknown) {
-        console.error('Fetch error:', error);
+      } catch (error: any) {
+        console.error('Fetch error:', error.message || error);
         setError('Tur verileri yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
       }
     };
-
     fetchData();
   }, [id]);
 
@@ -111,8 +120,8 @@ const TourDetailPage: React.FC = () => {
         itinerary: tourData.itinerary || [],
         status: tourData.status || 'available',
       });
-    } catch (error) {
-      console.error(`Hata: ID ${id} ile tur güncellenemedi. Detaylar:`, error);
+    } catch (error: any) {
+      console.error(`Hata: ID ${id} ile tur güncellenemedi. Detaylar:`, error.message || error);
       setError('Tur güncelleme işlemi başarısız oldu. Lütfen tekrar deneyin.');
     }
   };
